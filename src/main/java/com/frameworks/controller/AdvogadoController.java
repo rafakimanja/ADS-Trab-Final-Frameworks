@@ -17,7 +17,7 @@ public class AdvogadoController {
         as = new AdvogadoService(emf);
     }
 
-    public void menu() {
+    public void menu(Scanner scanner) {
         int opcao;
         do {
             System.out.println("\n--- ADVOGADOS ---");
@@ -31,17 +31,16 @@ public class AdvogadoController {
             scanner.nextLine();
 
             switch (opcao) {
-                case 1 -> cadastrar();
+                case 1 -> cadastrar(scanner);
                 case 2 -> listar();
-                case 3 -> atualizar();
-                case 4 -> remover();
+                case 3 -> atualizar(scanner);
+                case 4 -> remover(scanner);
             }
         }
         while (opcao != 0);
-        scanner.close();
     }
 
-    public void cadastrar(){
+    public void cadastrar(Scanner scanner){
 
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
@@ -67,7 +66,7 @@ public class AdvogadoController {
         as.listarAdvogados();
     }
 
-    public void atualizar(){
+    public void atualizar(Scanner scanner){
         as.listarAdvogados();
         Exception ex = null;
 
@@ -98,7 +97,7 @@ public class AdvogadoController {
             System.out.println("Advogado atualizado com sucesso!");
     }
 
-    public void remover(){
+    public void remover(Scanner scanner){
         as.listarAdvogados();
 
         System.out.print("ID do advogado: ");

@@ -1,23 +1,18 @@
 package com.frameworks.app;
 
+import com.frameworks.controller.AdvogadoController;
 import com.frameworks.controller.ClienteController;
-import com.frameworks.service.AdvogadoService;
-import com.frameworks.service.ClienteService;
-import com.frameworks.service.ProcessoService;
-
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import com.frameworks.controller.ProcessoController;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
         Scanner scanner = new Scanner(System.in);
 
-        AdvogadoService advogadoService = new AdvogadoService(emf);
+        AdvogadoController advogadoController = new AdvogadoController();
         ClienteController clienteController = new ClienteController();
-        ProcessoService processoService = new ProcessoService(emf);
+        ProcessoController processoController = new ProcessoController();
 
         int opcao;
         do {
@@ -31,13 +26,11 @@ public class Main {
             scanner.nextLine();
 
             switch (opcao) {
-                case 1 -> advogadoService.menu(scanner);
-                case 2 -> clienteController.menu();
-                case 3 -> processoService.menu(scanner);
+                case 1 -> advogadoController.menu(scanner);
+                case 2 -> clienteController.menu(scanner);
+                case 3 -> processoController.menu(scanner);
             }
         } while (opcao != 0);
-
-        emf.close();
         scanner.close();
         System.out.println("Sistema encerrado.");
     }

@@ -10,14 +10,13 @@ import java.util.Scanner;
 public class ClienteController {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
-    Scanner scanner = new Scanner(System.in);
     ClienteService cs;
 
     public ClienteController(){
         cs = new ClienteService(emf);
     }
 
-    public void menu() {
+    public void menu(Scanner scanner) {
         int opcao;
         do {
             System.out.println("\n--- CLIENTES ---");
@@ -31,18 +30,17 @@ public class ClienteController {
             scanner.nextLine();
 
             switch (opcao){
-                case 1 -> cadastrar();
+                case 1 -> cadastrar(scanner);
                 case 2 -> listar();
-                case 3 -> atualizar();
-                case 4 -> deletar();
+                case 3 -> atualizar(scanner);
+                case 4 -> deletar(scanner);
             }
 
         }
         while (opcao != 0);
-        scanner.close();
     }
 
-    public void cadastrar(){
+    public void cadastrar(Scanner scanner){
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
 
@@ -69,7 +67,7 @@ public class ClienteController {
         cs.listaClientes();
     }
 
-    public void atualizar(){
+    public void atualizar(Scanner scanner){
         cs.listaClientes();
         Exception ex = null;
 
@@ -101,7 +99,7 @@ public class ClienteController {
 
     }
 
-    public void deletar(){
+    public void deletar(Scanner scanner){
         cs.listaClientes();
 
         System.out.print("ID do cliente: ");
