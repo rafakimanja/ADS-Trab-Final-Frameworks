@@ -63,8 +63,6 @@ public class ClienteService {
     }
 
     public Exception atualizaCliente(Cliente c) {
-        listaClientes();
-
         EntityManager em = emf.createEntityManager();
         ClienteDAO dao = new ClienteDAO(em);
 

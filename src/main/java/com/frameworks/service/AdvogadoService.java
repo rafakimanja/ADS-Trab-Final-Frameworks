@@ -17,57 +17,33 @@ public class AdvogadoService {
         this.emf = emf;
     }
 
-    public void menu(Scanner scanner) {
-        int opcao;
-        do {
-            System.out.println("\n--- ADVOGADOS ---");
-            System.out.println("1. Cadastrar");
-            System.out.println("2. Listar");
-            System.out.println("3. Atualizar");
-            System.out.println("4. Remover");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcao) {
-                case 1 -> cadastrar(scanner);
-                case 2 -> listar();
-                case 3 -> atualizar(scanner);
-                case 4 -> remover(scanner);
-            }
-        } while (opcao != 0);
-    }
-
-    public void cadastrar(Scanner sc) {
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("OAB: ");
-        String oab = sc.nextLine();
-        System.out.print("Especialidade: ");
-        String especialidade = sc.nextLine();
-
+    public Exception cadastraAdvogado(String nome, String oab, String especialidade) {
         Advogado advogado = new Advogado();
-        advogado.setNome(nome);
-        advogado.setNumeroOAB(oab);
-        advogado.setEspecialidade(especialidade);
-
         EntityManager em = emf.createEntityManager();
+
+        try{
+            advogado.setNome(nome);
+            advogado.setNumeroOAB(oab);
+            advogado.setEspecialidade(especialidade);
+        } catch (IllegalArgumentException e){
+            return e;
+        }
+
         try {
             em.getTransaction().begin();
             AdvogadoDAO dao = new AdvogadoDAO(em);
             dao.salvar(advogado);
             em.getTransaction().commit();
-            System.out.println("Advogado cadastrado com sucesso.");
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao cadastrar: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }
     }
 
-    public void listar() {
+    public void listarAdvogados() {
         EntityManager em = emf.createEntityManager();
         try {
             List<Advogado> advogados = em.createQuery("FROM Advogado", Advogado.class).getResultList();
@@ -79,44 +55,30 @@ public class AdvogadoService {
         }
     }
 
-    public void atualizar(Scanner sc) {
-        listar();
-        System.out.print("ID do advogado: ");
-        Long id = sc.nextLong(); sc.nextLine();
+    public Advogado buscaAdvogadoById(Long id){
+        EntityManager em = emf.createEntityManager();
+        AdvogadoDAO dao = new AdvogadoDAO(em);
+        return dao.buscarPorId(id);
+    }
 
+    public Exception atualizaAdvogado(Advogado a) {
         EntityManager em = emf.createEntityManager();
         AdvogadoDAO dao = new AdvogadoDAO(em);
 
         try {
-            Advogado a = dao.buscarPorId(id);
-            if (a != null) {
-                System.out.print("Novo nome: ");
-                a.setNome(sc.nextLine());
-                System.out.print("Nova OAB: ");
-                a.setNumeroOAB(sc.nextLine());
-                System.out.print("Nova especialidade: ");
-                a.setEspecialidade(sc.nextLine());
-
-                em.getTransaction().begin();
-                dao.atualizar(a);
-                em.getTransaction().commit();
-                System.out.println("Advogado atualizado.");
-            } else {
-                System.out.println("Advogado não encontrado.");
-            }
+            em.getTransaction().begin();
+            dao.atualizar(a);
+            em.getTransaction().commit();
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }
     }
 
-    public void remover(Scanner sc) {
-        listar();
-        System.out.print("ID do advogado: ");
-        Long id = sc.nextLong(); sc.nextLine();
-
+    public Exception removeAdvogado(Long id) {
         EntityManager em = emf.createEntityManager();
         AdvogadoDAO dao = new AdvogadoDAO(em);
 
@@ -124,10 +86,10 @@ public class AdvogadoService {
             em.getTransaction().begin();
             dao.remover(id);
             em.getTransaction().commit();
-            System.out.println("Advogado removido.");
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao remover: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }

@@ -1,26 +1,26 @@
 package com.frameworks.controller;
 
-import com.frameworks.service.ClienteService;
+import com.frameworks.service.AdvogadoService;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import model.Cliente;
+import model.Advogado;
 
 import java.util.Scanner;
 
-public class ClienteController {
+public class AdvogadoController {
 
     EntityManagerFactory emf = Persistence.createEntityManagerFactory("default");
     Scanner scanner = new Scanner(System.in);
-    ClienteService cs;
+    AdvogadoService as;
 
-    public ClienteController(){
-        cs = new ClienteService(emf);
+    public AdvogadoController(){
+        as = new AdvogadoService(emf);
     }
 
     public void menu() {
         int opcao;
         do {
-            System.out.println("\n--- CLIENTES ---");
+            System.out.println("\n--- ADVOGADOS ---");
             System.out.println("1. Cadastrar");
             System.out.println("2. Listar");
             System.out.println("3. Atualizar");
@@ -30,29 +30,27 @@ public class ClienteController {
             opcao = scanner.nextInt();
             scanner.nextLine();
 
-            switch (opcao){
+            switch (opcao) {
                 case 1 -> cadastrar();
                 case 2 -> listar();
                 case 3 -> atualizar();
-                case 4 -> deletar();
+                case 4 -> remover();
             }
-
         }
         while (opcao != 0);
         scanner.close();
     }
 
     public void cadastrar(){
+
         System.out.print("Nome: ");
         String nome = scanner.nextLine();
+        System.out.print("OAB: ");
+        String oab = scanner.nextLine();
+        System.out.print("Especialidade: ");
+        String especialidade = scanner.nextLine();
 
-        System.out.print("CPF/CNPJ: ");
-        String cpfCnpj = scanner.nextLine();
-
-        System.out.print("Telefone (apenas números): ");
-        Long telefone = scanner.nextLong(); scanner.nextLine();
-
-        Exception ex = cs.cadastraCliente(nome, cpfCnpj, telefone);
+        Exception ex = as.cadastraAdvogado(nome, oab, especialidade);
 
         if (ex != null) {
             if (ex instanceof IllegalArgumentException) {
@@ -61,57 +59,56 @@ public class ClienteController {
                 System.out.println("Erro!: " + ex.getMessage());
             }
         } else {
-            System.out.println("Cliente cadastrado com sucesso!");
+            System.out.println("Advogado cadastrado com sucesso!");
         }
     }
 
     public void listar(){
-        cs.listaClientes();
+        as.listarAdvogados();
     }
 
     public void atualizar(){
-        cs.listaClientes();
+        as.listarAdvogados();
         Exception ex = null;
 
-        System.out.print("ID do cliente: ");
+        System.out.print("ID do advogado: ");
         Long id = scanner.nextLong(); scanner.nextLine();
 
-        Cliente cliente = cs.buscaClienteById(id);
+        Advogado advogado = as.buscaAdvogadoById(id);
 
-        if(cliente != null){
+        if(advogado != null){
             try{
                 System.out.print("Novo nome: ");
-                cliente.setNome(scanner.nextLine());
-                System.out.print("Novo CPF/CNPJ: ");
-                cliente.setCpfCnpj(scanner.nextLine());
-                System.out.print("Novo telefone: ");
-                cliente.setTelefone(scanner.nextLong()); scanner.nextLine();
+                advogado.setNome(scanner.nextLine());
+                System.out.print("Nova OAB: ");
+                advogado.setNumeroOAB(scanner.nextLine());
+                System.out.print("Nova especialidade: ");
+                advogado.setEspecialidade(scanner.nextLine());
             } catch (IllegalArgumentException e){
                 System.out.println("Dados invalidos: " + e.getMessage());
             }
-            ex = cs.atualizaCliente(cliente);
+            ex = as.atualizaAdvogado(advogado);
         } else {
-            System.out.println("Cliente nao encontrado.");
+            System.out.println("Advogado nao encontrado");
         }
 
         if (ex != null)
             System.out.println("Erro!: " + ex.getMessage());
         else
-            System.out.println("Cliente atualizado com sucesso!");
-
+            System.out.println("Advogado atualizado com sucesso!");
     }
 
-    public void deletar(){
-        cs.listaClientes();
+    public void remover(){
+        as.listarAdvogados();
 
-        System.out.print("ID do cliente: ");
+        System.out.print("ID do advogado: ");
         Long id = scanner.nextLong(); scanner.nextLine();
 
-        Exception ex = cs.removeCliente(id);
+        Exception ex = as.removeAdvogado(id);
 
         if (ex != null)
             System.out.println("Erro!: " + ex.getMessage());
         else
-            System.out.println("Cliente deletado com sucesso!");
+            System.out.println("Advogado deletado com sucesso!");
     }
 }
