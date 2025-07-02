@@ -16,7 +16,7 @@ public class Cliente {
     private String nome;
 
     @Column(nullable = false)
-    private Integer telefone;
+    private Long telefone;
 
     @OneToMany(mappedBy = "cliente")
     private List<Processo> processos;
@@ -47,9 +47,9 @@ public class Cliente {
         this.nome = nome;
     }
 
-    public Integer getTelefone() { return telefone; }
+    public Long getTelefone() { return telefone; }
 
-    public void setTelefone(Integer telefone) {
+    public void setTelefone(Long telefone) {
         if (telefone == null) {
             throw new IllegalArgumentException("Telefone não pode ser nulo");
         }

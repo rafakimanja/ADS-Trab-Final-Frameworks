@@ -14,7 +14,7 @@ public class ClienteTest {
         cliente = new Cliente();
         cliente.setCpfCnpj("123.456.789-09");
         cliente.setNome("Empresa X");
-        cliente.setTelefone(123456789);
+        cliente.setTelefone(123456789L);
     }
 
     @Test

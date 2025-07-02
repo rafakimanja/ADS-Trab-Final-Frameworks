@@ -56,6 +56,7 @@ public class Processo {
         this.status = status;
     }
 
+
     public String getVara() { return vara; }
 
     public void setVara(String vara) {

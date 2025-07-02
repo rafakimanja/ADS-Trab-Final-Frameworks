@@ -1,5 +1,6 @@
 package com.frameworks.app;
 
+import com.frameworks.controller.ClienteController;
 import com.frameworks.service.AdvogadoService;
 import com.frameworks.service.ClienteService;
 import com.frameworks.service.ProcessoService;
@@ -15,7 +16,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
 
         AdvogadoService advogadoService = new AdvogadoService(emf);
-        ClienteService clienteService = new ClienteService(emf);
+        ClienteController clienteController = new ClienteController();
         ProcessoService processoService = new ProcessoService(emf);
 
         int opcao;
@@ -31,7 +32,7 @@ public class Main {
 
             switch (opcao) {
                 case 1 -> advogadoService.menu(scanner);
-                case 2 -> clienteService.menu(scanner);
+                case 2 -> clienteController.menu();
                 case 3 -> processoService.menu(scanner);
             }
         } while (opcao != 0);

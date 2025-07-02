@@ -52,7 +52,7 @@ public class ProcessoDAOIntegracaoTest {
         Cliente cliente = new Cliente();
         cliente.setNome("Cliente Processo");
         cliente.setCpfCnpj("11122233344");
-        cliente.setTelefone(123456789);
+        cliente.setTelefone(123456789L);
 
         Processo processo = new Processo();
         processo.setNumeroProcesso("PROC-2025/001");
@@ -73,7 +73,7 @@ public class ProcessoDAOIntegracaoTest {
         Cliente cliente = new Cliente();
         cliente.setNome("Cliente Buscado");
         cliente.setCpfCnpj("55566677788");
-        cliente.setTelefone(987654321);
+        cliente.setTelefone(987654321L);
 
         Processo processo = new Processo();
         processo.setNumeroProcesso("PROC-2025/002");

@@ -39,7 +39,7 @@ public class ClienteDAOIntegracaoTest {
         Cliente cliente = new Cliente();
         cliente.setNome("Cliente de Teste");
         cliente.setCpfCnpj("12345678901");
-        cliente.setTelefone(999999999);
+        cliente.setTelefone(999999999L);
 
         em.getTransaction().begin();
         clienteDAO.salvar(cliente);
@@ -53,7 +53,7 @@ public class ClienteDAOIntegracaoTest {
         Cliente cliente = new Cliente();
         cliente.setNome("Cliente Buscado");
         cliente.setCpfCnpj("98765432100");
-        cliente.setTelefone(888888888);
+        cliente.setTelefone(888888888L);
 
         em.getTransaction().begin();
         clienteDAO.salvar(cliente);

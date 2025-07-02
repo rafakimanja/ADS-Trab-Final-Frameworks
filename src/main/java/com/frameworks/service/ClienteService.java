@@ -17,57 +17,33 @@ public class ClienteService {
         this.emf = emf;
     }
 
-    public void menu(Scanner scanner) {
-        int opcao;
-        do {
-            System.out.println("\n--- CLIENTES ---");
-            System.out.println("1. Cadastrar");
-            System.out.println("2. Listar");
-            System.out.println("3. Atualizar");
-            System.out.println("4. Remover");
-            System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (opcao) {
-                case 1 -> cadastrar(scanner);
-                case 2 -> listar();
-                case 3 -> atualizar(scanner);
-                case 4 -> remover(scanner);
-            }
-        } while (opcao != 0);
-    }
-
-    public void cadastrar(Scanner sc) {
-        System.out.print("Nome: ");
-        String nome = sc.nextLine();
-        System.out.print("CPF/CNPJ: ");
-        String cpfCnpj = sc.nextLine();
-        System.out.print("Telefone (apenas números): ");
-        Integer telefone = sc.nextInt(); sc.nextLine();
-
-        Cliente cliente = new Cliente();
-        cliente.setNome(nome);
-        cliente.setCpfCnpj(cpfCnpj);
-        cliente.setTelefone(telefone);
-
+    public Exception cadastraCliente(String nome, String cpfCnpj, Long telefone) {
         EntityManager em = emf.createEntityManager();
+        Cliente cliente = new Cliente();
+
+        try{
+            cliente.setNome(nome);
+            cliente.setCpfCnpj(cpfCnpj);
+            cliente.setTelefone(telefone);
+        } catch (IllegalArgumentException e){
+            return e;
+        }
+
         try {
             em.getTransaction().begin();
             ClienteDAO dao = new ClienteDAO(em);
             dao.salvar(cliente);
             em.getTransaction().commit();
-            System.out.println("Cliente cadastrado com sucesso.");
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao cadastrar: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }
     }
 
-    public void listar() {
+    public void listaClientes() {
         EntityManager em = emf.createEntityManager();
         try {
             List<Cliente> clientes = em.createQuery("FROM Cliente", Cliente.class).getResultList();
@@ -80,44 +56,32 @@ public class ClienteService {
         }
     }
 
-    public void atualizar(Scanner sc) {
-        listar();
-        System.out.print("ID do cliente: ");
-        Long id = sc.nextLong(); sc.nextLine();
+    public Cliente buscaClienteById(Long id){
+        EntityManager em = emf.createEntityManager();
+        ClienteDAO dao = new ClienteDAO(em);
+        return dao.buscarPorId(id);
+    }
+
+    public Exception atualizaCliente(Cliente c) {
+        listaClientes();
 
         EntityManager em = emf.createEntityManager();
         ClienteDAO dao = new ClienteDAO(em);
 
         try {
-            Cliente c = dao.buscarPorId(id);
-            if (c != null) {
-                System.out.print("Novo nome: ");
-                c.setNome(sc.nextLine());
-                System.out.print("Novo CPF/CNPJ: ");
-                c.setCpfCnpj(sc.nextLine());
-                System.out.print("Novo telefone: ");
-                c.setTelefone(sc.nextInt()); sc.nextLine();
-
-                em.getTransaction().begin();
-                dao.atualizar(c);
-                em.getTransaction().commit();
-                System.out.println("Cliente atualizado.");
-            } else {
-                System.out.println("Cliente não encontrado.");
-            }
+            em.getTransaction().begin();
+            dao.atualizar(c);
+            em.getTransaction().commit();
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }
     }
 
-    public void remover(Scanner sc) {
-        listar();
-        System.out.print("ID do cliente: ");
-        Long id = sc.nextLong(); sc.nextLine();
-
+    public Exception removeCliente(Long id) {
         EntityManager em = emf.createEntityManager();
         ClienteDAO dao = new ClienteDAO(em);
 
@@ -125,10 +89,10 @@ public class ClienteService {
             em.getTransaction().begin();
             dao.remover(id);
             em.getTransaction().commit();
-            System.out.println("Cliente removido.");
+            return null;
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.out.println("Erro ao remover: " + e.getMessage());
+            return e;
         } finally {
             em.close();
         }
